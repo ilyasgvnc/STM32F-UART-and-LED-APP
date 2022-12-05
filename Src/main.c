@@ -63,11 +63,11 @@ void led_drive();
 /* USER CODE BEGIN 0 */
 volatile uint32_t Baud_Rate = 115200;
 
-uint8_t Rx_data[12];                 									    // Receive data Buffer
-uint8_t tmp_data[1];                                                 	    // Receive data temporary Buffer
-uint8_t i=0;                        									    // index variable
-uint8_t bool;						   										// Start Stop state boolean variable
-uint16_t delayoff=700,delayon=300;	  									    // Delay time variable
+uint8_t Rx_data[12];                 						       // Receive data Buffer
+uint8_t tmp_data[1];                                                 	               // Receive data temporary Buffer
+uint8_t i=0;                        						       // index variable
+uint8_t bool;						                               // Start Stop state boolean variable
+uint16_t delayoff=700,delayon=300;	  					       // Delay time variable
 
 
 /* Note: This function is interrupt event. It calls when receive interrupt ongoing.
@@ -78,19 +78,19 @@ uint16_t delayoff=700,delayon=300;	  									    // Delay time variable
 
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
-	if(huart->Instance == USART2){  										// is instance(huart) USART2?
+	if(huart->Instance == USART2){  						// is instance(huart) USART2?
 
 		HAL_UARTEx_ReceiveToIdle_IT(&huart2, Rx_data, sizeof(Rx_data));		// Receive interrupt
 
-		for(i=Size;i<sizeof(Rx_data);i++)									// This is to to reset the old words that exceed the size.
+		for(i=Size;i<sizeof(Rx_data);i++)					// This is to to reset the old words that exceed the size.
 		{
 			Rx_data[i]=0;
 	}}
 
-	Temp_Inq(Rx_data,Size);													//"Temporary Inquary" function to below explained.
+	Temp_Inq(Rx_data,Size);								//"Temporary Inquary" function to below explained.
 
 
-	if(bool==TRUE){															// Bool query makes echo if was started.
+	if(bool==TRUE){									// Bool query makes echo if was started.
 			HAL_UART_Transmit_IT(&huart2, Rx_data,Size);
 
 		}
@@ -101,38 +101,38 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
  * */
 
 void Temp_Inq(uint8_t data[],uint16_t Size){
-		if (strcmp((char*)data,"START")==0) {								// Start query use strcmp()
-			bool = TRUE;
+	if (strcmp((char*)data,"START")==0) {						// Start query use strcmp()
+		bool = TRUE;
 
-		}else if(strcmp((char*)data,"STOP")==0){							// Stop query use strcmp()
-			bool = FALSE;
+	}else if(strcmp((char*)data,"STOP")==0){					// Stop query use strcmp()
+		bool = FALSE;
 
-		}else if((strncmp((char*)data,"ledon=",6) == 0) && (bool != FALSE)){// To find led on delay time,
-																			// Use strncmp() to not mix other chars.
-			delayon=0;
-			i=1;
+	}else if((strncmp((char*)data,"ledon=",6) == 0) && (bool != FALSE)){		// To find led on delay time,
+											// Use strncmp() to not mix other chars.
+		delayon=0;
+		i=1;
 
-			while(data[i+6] !='\0')											// To hand delay integer, loop go to after '='.
-			{
+		while(data[i+6] !='\0')							// To hand delay integer, loop go to after '='.
+		{
 
-				delayon = delayon + (data[(Size-1)-i]-48)*pow(10,i);		// To convert char to decimal and addition same time.
-				i++;
-			}
-				delayon = delayon + (data[Size-1]-48);						// Addition of ones digit and find delay on time.
-
-		}else if((strncmp((char*)data,"ledoff=",7)==0) && (bool != FALSE) ){// Led off function is same the "ledon" query.
-
-			delayoff=0;
-			i=1;
-
-			while(data[i+7] !='\0')
-			{
-
-				delayoff = delayoff + (data[(Size-1)-i]-48)*pow(10,i);
-				i++;
-			}
-			    delayoff = delayoff + (data[Size-1]-48);
+			delayon = delayon + (data[(Size-1)-i]-48)*pow(10,i);		// To convert char to decimal and addition same time.
+			i++;
 		}
+			delayon = delayon + (data[Size-1]-48);				// Addition of ones digit and find delay on time.
+
+	}else if((strncmp((char*)data,"ledoff=",7)==0) && (bool != FALSE) ){		// Led off function is same the "ledon" query.
+
+		delayoff=0;
+		i=1;
+
+		while(data[i+7] !='\0')
+		{
+
+			delayoff = delayoff + (data[(Size-1)-i]-48)*pow(10,i);
+			i++;
+		}
+		    delayoff = delayoff + (data[Size-1]-48);
+	}
 }
 
 /* Led drives according to bool state and delay times.
@@ -140,16 +140,16 @@ void Temp_Inq(uint8_t data[],uint16_t Size){
 void led_drive(){
 if(bool==TRUE){
 
-	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, 1);								// GPIO PIN is HIGH
-	HAL_Delay(delayon);														// Delay time to on
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, 1);					// GPIO PIN is HIGH
+	HAL_Delay(delayon);								// Delay time to on
 
-	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, 0);								// GPIO PIN is LOW
-	HAL_Delay(delayoff);													// Delay time to off.
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, 0);					// GPIO PIN is LOW
+	HAL_Delay(delayoff);								// Delay time to off.
 
 }else{
 
-	HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);									// GPIO toggle function.
-	HAL_Delay(1000);														// Delay 1s.
+	HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);						// GPIO toggle function.
+	HAL_Delay(1000);								// Delay 1s.
 
 }
 }
@@ -201,7 +201,7 @@ int main(void)
 
 
 
-	     led_drive();													  // Led drives in the loop.
+	     led_drive();								// Led drives in the loop.
 
 
     /* USER CODE END WHILE */
