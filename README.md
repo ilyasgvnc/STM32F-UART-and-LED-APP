@@ -3,24 +3,23 @@
 Hello, this repo is a Uart communication application. communication with interrupt. The tasks to be done are as follows; First, the LED is requested to flash constantly. On the basis of multiplication, the second "start" and "stop" information received from the serial port screen. "Start" is echo state that echo every message to serial port with "Uart Transmitter Interrupt". "Stop" is off the echo state and led toggles 1 per second. In addition, If it receives "ledon=xxx" or "ledoff=xxx"(x equal to integer), led on delay time and led off delay time is defined as ms unit.
 
 MPU : STM32F407VGT6 Discovery Board.
+
 UART: USART2
       Baud Rate: 115200,
       WordLength: 8B1
       Parity: NONE
       
 To Receive:
+  
   IDLE LINE event: Triggered when RX line has been in idle state (normally high state) for 1 frame time, after last received byte. Frame time is based on baudrate.    
   Higher baudrate means lower frame time for single byte.
   
   HAL_UARTEx_ReceiveToIdle_IT():
   
   Receive an amount of data in interrupt mode till either the expected number of data is received or an IDLE event occurs.
-  * @note   Reception is initiated by this function call. Further progress of reception is achieved thanks
-  *         to UART interrupts raised by RXNE and IDLE events. Callback is called at end of reception indicating
-  *         number of received data elements.
-  * @note   When UART parity is not enabled (PCE = 0), and Word Length is configured to 9 bits (M = 01),
-  *         the received data is handled as a set of uint16_t. In this case, Size must indicate the number
-  *         of uint16_t available through pData.
+  * @note   Reception is initiated by this function call. Further progress of reception is achieved thanks 
+    to UART interrupts raised by RXNE and IDLE events. Callback is called at end of reception indicatin number of received data elements.
+  * @note   When UART parity is not enabled (PCE = 0), and Word Length is configured to 9 bits (M = 01), the received data is handled as a set of uint16_t. In this case, Size must indicate the number of uint16_t available through pData.
   * @param huart UART handle.
   * @param pData Pointer to data buffer (uint8_t or uint16_t data elements).
   * @param Size  Amount of data elements (uint8_t or uint16_t) to be received.
